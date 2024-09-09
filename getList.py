@@ -34,15 +34,20 @@ for ch in channel:
 
         # 카테고리 추출
         categories = []
+        category_prev = 0
         items = driver.find_elements(By.CSS_SELECTOR, 'div.module_navi div.item')
 
         for item in items:
             name = item.find_element(By.CSS_SELECTOR, 'span.tit > span').text
             anchor = item.find_element(By.CSS_SELECTOR, 'a.navi_anchor').get_attribute('href')
 
+            anchor_no = int(anchor.split('#')[1].split('_')[1])
+            if (category_prev != anchor_no): category_prev = anchor_no
+
             categories.append({
                 'name': name,
                 'anchor': anchor,
+                'anchor_no': anchor_no,
             })
         
         # for category in categories:
@@ -51,21 +56,23 @@ for ch in channel:
         #     print()
 
         # 상품 더보기 버튼이 존재하는지 확인
-        while (len(driver.find_elements(By.CSS_SELECTOR, 'div.button_wrap')) != 0):
-            # 상품 더보기 버튼 클릭
+        while (len(driver.find_elements(By.CSS_SELECTOR, 'div.button_wrap')) > 0):
             driver.find_element(By.CSS_SELECTOR, 'button.btn_more').click()
+            print('btn_more click')
 
             # 해당 엘리먼트가 로딩될 때까지 대기
             # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.item')))
         
-        # 추가로 상품이 로딩되도록 3초 대기
-        # time.sleep(3)
-        # ===== 이미 시간을 잡아 먹고 있음
+        # # 추가로 상품이 로딩되도록 3초 대기
+        # # time.sleep(3)
+        # # ===== 이미 시간을 잡아 먹고 있음
 
         # 상품 리스트
         products = []
-        for category in categories[1:]:
-            css_anchor = category['anchor'].split('#')[1]
+        # for category in categories[1:]:
+        categories_new = driver.find_elements(By.CSS_SELECTOR, 'div.module_item')
+        for category in categories_new:
+            # css_anchor = category['anchor'].split('#')[1]
             # print(category['name'], end='\t', flush=True)
             # try:
             #     driver.find_element(By.CSS_SELECTOR, f'#{css_anchor} + div.module_item')
@@ -73,7 +80,9 @@ for ch in channel:
             # except:
             #     continue
 
-            items = driver.find_elements(By.CSS_SELECTOR, f'#{css_anchor} + div.module_item ul.products-list li.elements_item')
+            # items = driver.find_elements(By.CSS_SELECTOR, f'#{css_anchor} + div.module_item ul.products-list li.elements_item')
+            items = category.find_elements(By.CSS_SELECTOR, 'ul.products-list li.elements_item')
+            cate_code = category.get_attribute('id')
             # print(css_anchor, len(items.find_elements(By.CSS_SELECTOR, 'li.elements_item')))
 
             for item in items:
@@ -88,7 +97,7 @@ for ch in channel:
                 # ===== 주류 adult_box 처리해야함
 
                 products.append({
-                    'cate_name': category['name'],
+                    'cate_code': cate_code,
                     'product_code': product_code,
                     'title': title,
                     'url': url,
