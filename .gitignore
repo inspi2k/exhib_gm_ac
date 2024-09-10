@@ -1,7 +1,7 @@
 .DS_Store
-.xlsx
-.jpg
-.png
+*.xlsx
+*.jpg
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
