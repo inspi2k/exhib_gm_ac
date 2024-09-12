@@ -22,7 +22,8 @@ channel = [
     {'name':'gmarket', 'url':'http://rpp.gmarket.co.kr/?exhib=179136', 'buy_counter':'buy_counter_bx'},
     {'name':'auction', 'url':'http://rpp.auction.co.kr/?exhib=179137', 'buy_counter':'amount'},
 ]
-excel_file = f'list_{datetime.now().strftime("%y%m%d_%H%M%s")}.xlsx'
+now = datetime.now().strftime("%y%m%d_%H%M%s")
+excel_file = f'list_{now}.xlsx'
 
 for ch in channel:
     
@@ -97,6 +98,7 @@ for ch in channel:
                 # ===== 주류 adult_box 처리해야함
 
                 products.append({
+                    'datetime': now,
                     'cate_code': cate_code,
                     'product_code': product_code,
                     'title': title,
